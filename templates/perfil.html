@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="flex flex-col gap-6">
+<!-- flex: ativa o flexbox; flex-col: empilha os itens na vertical; gap-6: cria um espaço de 24px entre os itens -->
+
+    <header class="mt-2">
+    <!-- mt-2: adiciona uma margem no topo de 8px -->
+        <h2 class="text-2xl font-bold text-gray-900">Meu Perfil</h2>
+        <!-- text-2xl: tamanho da fonte 24px; font-bold: texto em negrito; text-gray-900: cor cinza escuro/chumbo -->
+    </header>
+
+    <section class="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 flex items-center gap-4">
+    <!-- bg-white: fundo branco; rounded-3xl: bordas bem arredondadas; p-6: espaçamento interno de 24px; shadow-sm: sombra leve; border e border-gray-100: borda fina cinza clara; flex e items-center: alinha itens lado a lado e no centro vertical; gap-4: espaço de 16px entre a foto e o texto -->
+        
+        <div class="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold text-2xl">
+        <!-- w-16 h-16: largura e altura de 64px; rounded-full: deixa totalmente redondo; bg-blue-100: fundo azul claro; flex, items-center e justify-center: centralizam a letra; text-blue-700, font-bold e text-2xl: texto azul escuro, negrito e tamanho 24px -->
+            C
+        </div>
+        
+        <div class="flex-1">
+        <!-- flex-1: faz essa área crescer e ocupar todo o espaço restante da linha -->
+            <h3 class="text-xl font-bold text-gray-900">César Capelli</h3>
+            <!-- text-xl: fonte 20px; font-bold: negrito; text-gray-900: texto cinza escuro -->
+            
+            <p class="text-sm text-gray-500 mb-1">Mairinque, SP</p>
+            <!-- text-sm: fonte 14px; text-gray-500: cinza médio; mb-1: margem inferior de 4px -->
+            
+            <span class="inline-block bg-green-100 text-green-700 text-xs px-2 py-1 rounded font-medium">Conta Verificada</span>
+            <!-- inline-block: permite aplicar espaçamento na mesma linha; bg-green-100 e text-green-700: fundo verde claro e texto verde escuro; text-xs: fonte 12px; px-2 py-1: padding horizontal 8px e vertical 4px; rounded: bordas levemente arredondadas; font-medium: peso da fonte intermediário -->
+        </div>
+    </section>
+
+    <section class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
+    <!-- overflow-hidden: corta qualquer cor/efeito que tente passar das bordas arredondadas da caixa -->
+        
+        <div class="flex flex-col">
+        <!-- flex-col: empilha os botões do menu um abaixo do outro -->
+            
+            <!-- Opção 1: Dados Pessoais -->
+            <a href="#" class="flex items-center justify-between p-4 border-b border-gray-50 hover:bg-gray-50 transition-colors">
+            <!-- flex e items-center: alinha o conteúdo no meio verticalmente; justify-between: joga o ícone da esquerda pra uma ponta e a seta pra outra; p-4: padding de 16px; border-b e border-gray-50: linha inferior bem clara; hover:bg-gray-50: muda o fundo ao passar o mouse; transition-colors: transição de cor suave -->
+                
+                <div class="flex items-center gap-3">
+                <!-- gap-3: espaço de 12px entre o ícone cinza e o texto -->
+                    
+                    <div class="p-2 bg-gray-100 rounded-lg text-gray-600">
+                    <!-- p-2: padding interno de 8px; bg-gray-100: fundo cinza claro; rounded-lg: cantos arredondados; text-gray-600: cor do desenho do ícone cinza escuro -->
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                        <!-- w-5 h-5: largura e altura do ícone de 20px -->
+                    </div>
+                    <span class="font-medium text-gray-700">Dados Pessoais</span>
+                    <!-- font-medium: texto com espessura média; text-gray-700: cinza intermediário escuro -->
+                </div>
+                
+                <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                <!-- text-gray-400: deixa a seta com uma cor cinza mais apagada -->
+            </a>
+
+            <!-- Opção 2: Segurança -->
+            <a href="#" class="flex items-center justify-between p-4 border-b border-gray-50 hover:bg-gray-50 transition-colors">
+                <div class="flex items-center gap-3">
+                    <div class="p-2 bg-gray-100 rounded-lg text-gray-600">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                    </div>
+                    <span class="font-medium text-gray-700">Segurança e Senhas</span>
+                </div>
+                <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+            </a>
+
+            <!-- Opção 3: Sair -->
+            <a href="#" class="flex items-center justify-between p-4 hover:bg-red-50 transition-colors group">
+            <!-- hover:bg-red-50: muda o fundo para um vermelho muito claro ao passar o mouse; group: transforma a linha inteira em um "grupo" que podemos vigiar -->
+                
+                <div class="flex items-center gap-3">
+                    <div class="p-2 bg-red-100 rounded-lg text-red-600 group-hover:bg-red-200 transition-colors">
+                    <!-- bg-red-100 e text-red-600: caixinha do ícone com fundo vermelho claro e traços vermelho escuro; group-hover:bg-red-200: quando o usuário passar o mouse na linha toda (o grupo), APENAS esta caixinha escurece o fundo para red-200 -->
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                    </div>
+                    <span class="font-medium text-red-600">Sair do Aplicativo</span>
+                    <!-- text-red-600: texto da opção em vermelho -->
+                </div>
+            </a>
+
+        </div>
+    </section>
+
+</div>
+{% endblock %}
