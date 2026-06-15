@@ -7,17 +7,17 @@
     <!-- CARD PRINCIPAL DE RESUMO -->
     <section class="bg-blue-600 rounded-3xl p-6 text-white shadow-lg mt-2">
         <p class="text-blue-100 text-sm font-medium mb-1">Saldo Disponível</p>
-        <h2 class="text-4xl font-bold mb-6">R$ 5.240,00</h2>
+        <h1 class="text-4xl font-bold mb-6">R$ {{ saldo_tela }} </h1>
         
         <!-- FAIXA INTERNA DE GASTO TOTAL -->
         <div class="flex justify-between items-center bg-blue-700/50 rounded-2xl p-4">
             <div>
                 <p class="text-blue-200 text-xs mb-1">Gasto Total</p>
-                <p class="font-semibold tracking-wide">R$ 2.760,00</p>
+                <p class="font-semibold tracking-wide">R$ {{ gasto_tela }}</p>
             </div>
             <div class="text-right">
                 <p class="text-blue-200 text-xs mb-1">Faturas Abertas</p>
-                <p class="font-semibold tracking-wide">2</p>
+                <p class="font-semibold tracking-wide">{{ faturas_tela }}</p>
             </div>
         </div>
     </section>

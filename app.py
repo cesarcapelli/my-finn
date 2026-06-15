@@ -4,7 +4,15 @@ app = Flask(__name__)
 
 @app.route('/')
 def inicio():
-    return render_template('visao_geral.html')
+
+    meu_saldo = "12.500,00"
+    meus_gastos = "3.150,00"
+    faturas_pendentes = 1
+
+    return render_template('visao_geral.html',
+                           saldo_tela=meu_saldo,
+                           gasto_tela=meus_gastos,
+                           faturas_tela=faturas_pendentes)
 
 @app.route('/cartoes')
 def cartoes():
