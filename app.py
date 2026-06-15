@@ -12,8 +12,15 @@ def cartoes():
 
 @app.route('/perfil')
 def perfil():
-    return render_template('perfil.html')
+
+    nome_usuario = "César Capelli"
+    cidade_usuario = "Mairinque, SP"
+    status_conta = "Conta VIP"
+
+    return render_template('perfil.html',
+                           nome_tela=nome_usuario,
+                           local_tela=cidade_usuario,
+                           status_tela=status_conta)
 
 if __name__ == '__main__':
     app.run(debug=True)
-    
