@@ -16,7 +16,14 @@ def inicio():
 
 @app.route('/cartoes')
 def cartoes():
-    return render_template('cartoes.html')
+
+    lista_de_cartoes = [
+        {"nome": "Nubank", "final": "4567", "bandeira": "Mastercard", "cor": "bg-purple-600"},
+        {"nome": "Banco Inter", "final": "1234", "bandeira": "Mastercard", "cor": "bg-orange-500"},
+        {"nome": "Itaú Personnalité", "final": "8901", "bandeira": "Visa", "cor": "bg-gray-800"}
+    ]
+
+    return render_template('cartoes.html', meus_cartoes=lista_de_cartoes)
 
 @app.route('/perfil')
 def perfil():
