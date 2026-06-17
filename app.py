@@ -4,11 +4,34 @@ app = Flask(__name__)
 
 @app.route('/')
 def inicio():
-    return render_template('visao_geral.html')
+    meu_saldo = "12.500,00"
+    meus_gastos = "3.150,00"
+    faturas_pendentes = 1
+
+    # 👇 Nova lista simulando os gastos por categoria
+    lista_gastos = [
+        {"categoria": "Alimentação", "icone": "🍔", "valor": "1.200,00", "cor_barra": "bg-orange-500", "largura": "w-3/5"},
+        {"categoria": "Transporte", "icone": "🚗", "valor": "450,00", "cor_barra": "bg-blue-500", "largura": "w-1/4"},
+        {"categoria": "Lazer", "icone": "🍿", "valor": "300,00", "cor_barra": "bg-purple-500", "largura": "w-1/6"}
+    ]
+
+    # Enviamos todas as variáveis antigas + a nova lista de gastos
+    return render_template('visao_geral.html', 
+                           saldo_tela=meu_saldo, 
+                           gasto_tela=meus_gastos,
+                           faturas_tela=faturas_pendentes,
+                           meus_gastos_categoria=lista_gastos) # Envia a lista para o HTML
 
 @app.route('/cartoes')
 def cartoes():
-    return render_template('cartoes.html')
+
+    lista_de_cartoes = [
+        {"nome": "Nubank", "final": "4567", "bandeira": "Mastercard", "cor": "bg-purple-600"},
+        {"nome": "Banco Inter", "final": "1234", "bandeira": "Mastercard", "cor": "bg-orange-500"},
+        {"nome": "Itaú Personnalité", "final": "8901", "bandeira": "Visa", "cor": "bg-gray-800"}
+    ]
+
+    return render_template('cartoes.html', meus_cartoes=lista_de_cartoes)
 
 @app.route('/perfil')
 def perfil():

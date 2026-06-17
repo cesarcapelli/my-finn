@@ -7,17 +7,17 @@
     <!-- CARD PRINCIPAL DE RESUMO -->
     <section class="bg-blue-600 rounded-3xl p-6 text-white shadow-lg mt-2">
         <p class="text-blue-100 text-sm font-medium mb-1">Saldo Disponível</p>
-        <h2 class="text-4xl font-bold mb-6">R$ 5.240,00</h2>
+        <h1 class="text-4xl font-bold mb-6">R$ {{ saldo_tela }} </h1>
         
         <!-- FAIXA INTERNA DE GASTO TOTAL -->
         <div class="flex justify-between items-center bg-blue-700/50 rounded-2xl p-4">
             <div>
                 <p class="text-blue-200 text-xs mb-1">Gasto Total</p>
-                <p class="font-semibold tracking-wide">R$ 2.760,00</p>
+                <p class="font-semibold tracking-wide">R$ {{ gasto_tela }}</p>
             </div>
             <div class="text-right">
                 <p class="text-blue-200 text-xs mb-1">Faturas Abertas</p>
-                <p class="font-semibold tracking-wide">2</p>
+                <p class="font-semibold tracking-wide">{{ faturas_tela }}</p>
             </div>
         </div>
     </section>
@@ -29,35 +29,23 @@
             <a href="#" class="text-sm text-blue-600 font-medium hover:underline">Ver tudo</a>
         </div>
 
-        <!-- CARD BRANCO COM A LISTA DE CATEGORIAS -->
         <div class="bg-white rounded-3xl p-5 shadow-sm border border-gray-100 flex flex-col gap-5">
             
-            <!-- ITEM 1: ALIMENTAÇÃO -->
+            {% for gasto in meus_gastos_categoria %}
+            
             <div>
                 <div class="flex justify-between text-sm mb-2">
-                    <span class="font-medium text-gray-700">🍔 Alimentação</span>
-                    <span class="font-bold text-gray-900">R$ 1.200,00</span>
+                    <span class="font-medium text-gray-700">{{ gasto.icone }} {{ gasto.categoria }}</span>
+                    <span class="font-bold text-gray-900">R$ {{ gasto.valor }}</span>
                 </div>
-                <!-- BARRA DE PROGRESSO FUNDO -->
-                <div class="w-full bg-gray-100 rounded-full h-2.5">
-                    <!-- BARRA DE PROGRESSO PREENCHIMENTO -->
-                    <div class="bg-orange-400 h-2.5 rounded-full" style="width: 70%"></div>
-                </div>
-            </div>
-
-            <!-- ITEM 2: TRANSPORTE -->
-            <div>
-                <div class="flex justify-between text-sm mb-2">
-                    <span class="font-medium text-gray-700">🚗 Transporte</span>
-                    <span class="font-bold text-gray-900">R$ 450,00</span>
-                </div>
-                <div class="w-full bg-gray-100 rounded-full h-2.5">
-                    <div class="bg-blue-400 h-2.5 rounded-full" style="width: 40%"></div>
+                
+                <div class="w-full bg-gray-200 rounded-full h-2.5">
+                    <div class="{{ gasto.cor_barra }} {{ gasto.largura }} h-2.5 rounded-full"></div>
                 </div>
             </div>
-
-        </div>
+            
+            {% endfor %}
+            </div>
     </section>
-
 </div>
 {% endblock %}
