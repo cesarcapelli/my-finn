@@ -4,15 +4,23 @@ app = Flask(__name__)
 
 @app.route('/')
 def inicio():
-
     meu_saldo = "12.500,00"
     meus_gastos = "3.150,00"
     faturas_pendentes = 1
 
-    return render_template('visao_geral.html',
-                           saldo_tela=meu_saldo,
+    # 👇 Nova lista simulando os gastos por categoria
+    lista_gastos = [
+        {"categoria": "Alimentação", "icone": "🍔", "valor": "1.200,00", "cor_barra": "bg-orange-500", "largura": "w-3/5"},
+        {"categoria": "Transporte", "icone": "🚗", "valor": "450,00", "cor_barra": "bg-blue-500", "largura": "w-1/4"},
+        {"categoria": "Lazer", "icone": "🍿", "valor": "300,00", "cor_barra": "bg-purple-500", "largura": "w-1/6"}
+    ]
+
+    # Enviamos todas as variáveis antigas + a nova lista de gastos
+    return render_template('visao_geral.html', 
+                           saldo_tela=meu_saldo, 
                            gasto_tela=meus_gastos,
-                           faturas_tela=faturas_pendentes)
+                           faturas_tela=faturas_pendentes,
+                           meus_gastos_categoria=lista_gastos) # Envia a lista para o HTML
 
 @app.route('/cartoes')
 def cartoes():
