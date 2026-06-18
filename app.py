@@ -1,29 +1,27 @@
 from flask import Flask, render_template, request, redirect
+from flask_sqlalchemy import SQLAlchemy # Tradutor de python para SLQ para nosso banco de dados
 
 app = Flask(__name__)
 
-lista_de_cartoes = [
-    {"nome": "Nubank", "final": "4567", "bandeira": "Mastercard", "cor": "bg-purple-600"},
-    {"nome": "Banco Inter", "final": "1234", "bandeira": "Mastercard", "cor": "bg-orange-500"},
-    {"nome": "Itaú Personnalité", "final": "8901", "bandeira": "Visa", "cor": "bg-gray-800"},
-    {"nome": "Banco do Brasil", "final": "9988", "bandeira": "Elo", "cor": "bg-yellow-500"},
-    {"nome": "Bradesco Prime", "final": "3344", "bandeira": "Visa", "cor": "bg-red-600"},
-    {"nome": "Santander Select", "final": "5566", "bandeira": "Mastercard", "cor": "bg-red-500"},
-    {"nome": "C6 Bank Carbon", "final": "7788", "bandeira": "Mastercard", "cor": "bg-gray-900"},
-    {"nome": "Caixa Econômica", "final": "1122", "bandeira": "Elo", "cor": "bg-blue-500"},
-    {"nome": "XP Visa Infinite", "final": "0099", "bandeira": "Visa", "cor": "bg-slate-800"},
-    {"nome": "BTG Pactual", "final": "4433", "bandeira": "Mastercard", "cor": "bg-blue-900"},
-    {"nome": "Neon", "final": "2211", "bandeira": "Visa", "cor": "bg-cyan-500"},
-    {"nome": "Banco Next", "final": "6677", "bandeira": "Visa", "cor": "bg-emerald-500"},
-    {"nome": "Banco Pan", "final": "8899", "bandeira": "Mastercard", "cor": "bg-sky-500"},
-    {"nome": "Mercado Pago", "final": "3322", "bandeira": "Visa", "cor": "bg-blue-400"},
-    {"nome": "PicPay Card", "final": "5544", "bandeira": "Mastercard", "cor": "bg-green-500"},
-    {"nome": "Sicoob", "final": "7766", "bandeira": "Mastercard", "cor": "bg-teal-700"},
-    {"nome": "Sicredi", "final": "9900", "bandeira": "Visa", "cor": "bg-green-600"},
-    {"nome": "Porto Seguro", "final": "1133", "bandeira": "Visa", "cor": "bg-blue-700"},
-    {"nome": "Will Bank", "final": "2244", "bandeira": "Mastercard", "cor": "bg-yellow-400"},
-    {"nome": "Iti Itaú", "final": "5577", "bandeira": "Visa", "cor": "bg-pink-500"}
-]
+# Avisamos ao flask onde o banco vai ficar
+# 'sqlite://banco.db' significa: crie um arquivo chamado banco.db na mesma pasta do projeto
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///banco.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+# Ligar o tradutor no nosso aplicativo
+db = SQLAlchemy(app)
+
+class Cartao(db.Model):
+    # Definimos as colunas da nossa tabela de cartões
+    id = db.Column(db.Integer, primary_key=True) # Cada cartão tera seu ID ÚNICO mesmo
+    nome = db.Column(db.String(100), nullable=False) # Texto (até 100 letras), não pode ser vazio
+    final = db.Column(db.String(4), nullable=False) # até 4.... quase que autoexplicativo.
+    bandeira = db.Column(db.String(50), nullable=False)
+    cor = db.Column(db.String(50), nullable=False)
+
+# Esse comando cria o arquivo físico do banco de dados
+with app.app_context():
+    db.create_all()
 
 
 
@@ -48,7 +46,11 @@ def inicio():
                             
 @app.route('/cartoes')
 def cartoes():
-    return render_template('cartoes.html', meus_cartoes=lista_de_cartoes)
+    # Busca no banco:pega todos os registros da tabela cartao
+    cartoes_do_banco = Cartao.query.all()
+
+    # Enviamos para o HTML a lista que veio do banco
+    return render_template('cartoes.html', meus_cartoes=cartoes_do_banco)
 
 @app.route('/perfil')
 def perfil():
@@ -69,17 +71,19 @@ def adicionar_cartao():
     final_digitado= request.form.get('final_cartao')
 
     # 2. Mosntamos o "molde" do novo cartão usando o que o usuário digitou lá no formulário
-    novo_cartao = {
-        "nome": nome_digitado,
-        "final": final_digitado,
-        "bandeira": "Visa", # Fixo por enquanto...
-        "cor": "bg-teal-500" # Uma cor verde-água para os novos cartões. 
-    }
+    novo_cartao = Cartao(
+        nome=nome_digitado,
+        final=final_digitado,
+        bandeira="Visa",
+        cor="bg-teal-500"
+    )
 
-    # 3. Adicionamos esse novo cartão na nossa lista global, ou "lista_de_cartoes"
-    lista_de_cartoes.append(novo_cartao)
+    # 3. Colocamos na fila: Avisamos o banco de dados que queremos adicionar isso
+    db.session.add(novo_cartao)
 
-    # 4. Mandamos o navegador voltar para a tela de cartões para ver o resultado assim que o usuário clica em "Adicionar Cartao"
+    # 4. Salvamos de verdade: O botão de "Salvar" salva definitivo no servidor/disco rigido
+    db.session.commit()
+
     return redirect('/cartoes')
 
 if __name__ == '__main__':
