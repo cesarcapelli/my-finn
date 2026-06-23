@@ -14,8 +14,11 @@
             <div class="flex justify-between items-center mb-8">
                 <span class="font-bold text-lg tracking-wide">{{ cartao.nome }}</span>
                 <span class="text-xs font-medium px-2 py-1 bg-white/20 rounded">{{ cartao.bandeira }}</span>
-                <div class="flex flex-col items-end">
-                    <a href="/deletar_cartao/{{ cartao.id }}" class="text-xs text-red-200 hover:text-red-500 mt-2 transition-colors">❌ Excluir</a>
+                <div class="flex gap-4 mt-2">
+                    <a href="/editar_cartao/{{ cartao.id }}" class="text-xs text-blue-200 hover:text-blue-400 transition-colors">
+                        ✏️ Editar</a>
+                    <a href="/deletar_cartao/{{ cartao.id }}" class="text-xs text-red-200 hover:text-red-500 mt-2 transition-colors">
+                        ❌ Excluir</a>
                 </div>
             </div>
             <div>
