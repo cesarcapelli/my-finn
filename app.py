@@ -68,14 +68,103 @@ def perfil():
 def adicionar_cartao():
     # 1. Lemos os dados que o HTML enviou pelo atributo name dos inputs vindo do formulário de adicionar cartôes
     nome_digitado = request.form.get('nome_cartao')
-    final_digitado= request.form.get('final_cartao')
+    final_digitado = request.form.get('final_cartao')
+
+    nome_formatado = nome_digitado.lower()
+
+    # COR/BANDEIRA PADRÃO PARA CARTÕES DESCONHECIDOS
+    cor_escolhida = "bg-gray-800"
+    bandeira_escolhida = "Visa"
+
+    # CARTÔES COM CORES/BANDEIRAS SETADOS:
+
+    if "nubank" in nome_formatado:
+            cor_escolhida = "bg-purple-600"
+            bandeira_escolhida = "Mastercard"
+            
+    elif "inter" in nome_formatado:
+        cor_escolhida = "bg-orange-500"
+        bandeira_escolhida = "Mastercard"
+        
+    elif "itaú" in nome_formatado or "itau" in nome_formatado:
+        cor_escolhida = "bg-orange-500" 
+        bandeira_escolhida = "Visa"
+        
+    elif "bradesco" in nome_formatado:
+        cor_escolhida = "bg-red-600"
+        bandeira_escolhida = "Elo"
+        
+    elif "c6" in nome_formatado:
+        cor_escolhida = "bg-gray-900"
+        bandeira_escolhida = "Mastercard"
+        
+    elif "brasil" in nome_formatado or "bb" in nome_formatado:
+        cor_escolhida = "bg-yellow-500"
+        bandeira_escolhida = "Elo"
+        
+    elif "porto seguro" in nome_formatado or "porto" in nome_formatado:
+        cor_escolhida = "bg-blue-700"
+        bandeira_escolhida = "Visa"
+    
+    elif "santander" in nome_formatado:
+        cor_escolhida = "bg-red-500"
+        bandeira_escolhida = "Mastercard"
+        
+    elif "caixa" in nome_formatado:
+        cor_escolhida = "bg-blue-500"
+        bandeira_escolhida = "Elo"
+        
+    elif "xp" in nome_formatado:
+        cor_escolhida = "bg-slate-800"
+        bandeira_escolhida = "Visa"
+        
+    elif "btg" in nome_formatado:
+        cor_escolhida = "bg-blue-900"
+        bandeira_escolhida = "Mastercard"
+        
+    elif "neon" in nome_formatado:
+        cor_escolhida = "bg-cyan-500"
+        bandeira_escolhida = "Visa"
+        
+    elif "next" in nome_formatado:
+        cor_escolhida = "bg-emerald-500"
+        bandeira_escolhida = "Visa"
+        
+    elif "pan" in nome_formatado:
+        cor_escolhida = "bg-sky-500"
+        bandeira_escolhida = "Mastercard"
+        
+    elif "mercado pago" in nome_formatado or "mercado" in nome_formatado:
+        cor_escolhida = "bg-blue-400"
+        bandeira_escolhida = "Visa"
+        
+    elif "picpay" in nome_formatado or "pic" in nome_formatado:
+        cor_escolhida = "bg-green-500"
+        bandeira_escolhida = "Mastercard"
+        
+    elif "sicoob" in nome_formatado:
+        cor_escolhida = "bg-teal-700"
+        bandeira_escolhida = "Mastercard"
+        
+    elif "sicredi" in nome_formatado:
+        cor_escolhida = "bg-green-600"
+        bandeira_escolhida = "Visa"
+        
+    elif "will" in nome_formatado:
+        cor_escolhida = "bg-yellow-400"
+        bandeira_escolhida = "Mastercard"
+        
+    elif "iti" in nome_formatado:
+        cor_escolhida = "bg-pink-500"
+        bandeira_escolhida = "Visa"
+
 
     # 2. Mosntamos o "molde" do novo cartão usando o que o usuário digitou lá no formulário
     novo_cartao = Cartao(
         nome=nome_digitado,
         final=final_digitado,
-        bandeira="Visa",
-        cor="bg-teal-500"
+        bandeira=bandeira_escolhida,
+        cor=cor_escolhida
     )
 
     # 3. Colocamos na fila: Avisamos o banco de dados que queremos adicionar isso
@@ -85,6 +174,14 @@ def adicionar_cartao():
     db.session.commit()
 
     return redirect('/cartoes')
+
+@app.route('/deletar_cartao/<int:id>')
+def deletar_cartao(id):
+    cartao_para_deletar = Cartao.query.get_or_404(id)
+    db.session.delete(cartao_para_deletar)
+    db.session.commit()
+    return redirect('/cartoes')
+
 
 if __name__ == '__main__':
     app.run(debug=True)

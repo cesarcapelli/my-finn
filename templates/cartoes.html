@@ -14,6 +14,9 @@
             <div class="flex justify-between items-center mb-8">
                 <span class="font-bold text-lg tracking-wide">{{ cartao.nome }}</span>
                 <span class="text-xs font-medium px-2 py-1 bg-white/20 rounded">{{ cartao.bandeira }}</span>
+                <div class="flex flex-col items-end">
+                    <a href="/deletar_cartao/{{ cartao.id }}" class="text-xs text-red-200 hover:text-red-500 mt-2 transition-colors">❌ Excluir</a>
+                </div>
             </div>
             <div>
                 <p class="text-xs opacity-90 mb-1 font-medium tracking-widest">FINAL DO CARTÃO</p>
@@ -34,7 +37,7 @@
                             class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2 text-sm text-gray-800 outline-none focus:border-blue-500 transition-colors">
                 </div>
                 <div>
-                    <label class="text-ss font-medium text-gray-500 mb-1 block">Últimos 4 dígitos</label>
+                    <label class="text-xs font-medium text-gray-500 mb-1 block">Últimos 4 dígitos</label>
                     <input type="text" name="final_cartao" maxlength="4" required
                             class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2 text-sm text-gray-800 outline-none focus:border-blue-500 transition-colors">
                 </div>
