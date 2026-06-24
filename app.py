@@ -19,6 +19,14 @@ class Cartao(db.Model):
     bandeira = db.Column(db.String(50), nullable=False)
     cor = db.Column(db.String(50), nullable=False)
 
+class Gasto(db.Model):
+    id = db.Column(db.Integer, primary_key=True) 
+    categoria = db.Column(db.String(50), nullable=False) # Ex: Alimentação, Transporte, Lazer,....
+    icone =  db.Column(db.String(10), nullable=False) # Ex: 🍔, 🍿, 🚗,.....
+    valor = db.Column(db.String(20), nullable=False) # Ex: 1.200,00 ....
+    cor_barra = db.Column(db.String(50), nullable=False) # Ex: bg-orange-500
+    largura = db.Column(db.String(20), nullable=False) # Ex: w-3/5
+
 # Esse comando cria o arquivo físico do banco de dados
 with app.app_context():
     db.create_all()
@@ -26,23 +34,22 @@ with app.app_context():
 
 @app.route('/')
 def inicio():
+    # 1. Busca todos os gastos guardados no banco de dados
+    gastos_do_banco = Gasto.query.all()
+
+    # 2. (próxima feature isso também sumirá e será totalmente dinanico e editavel pelo usuario)
     meu_saldo = "12.500,00"
     meus_gastos = "3.150,00"
     faturas_pendentes = 1
 
-    lista_gastos = [
-        {"categoria": "Alimentação", "icone": "🍔", "valor": "1.200,00", "cor_barra": "bg-orange-500", "largura": "w-3/5"},
-        {"categoria": "Transporte", "icone": "🚗", "valor": "450,00", "cor_barra": "bg-blue-500", "largura": "w-1/4"},
-        {"categoria": "Lazer", "icone": "🍿", "valor": "300,00", "cor_barra": "bg-purple-500", "largura": "w-1/6"}
-    ]
-
-    # Enviamos todas as variáveis antigas + a nova lista de gastos
+    # 3. Enviamos os gastos DO BANCO para o HTML
     return render_template('visao_geral.html', 
                            saldo_tela=meu_saldo, 
                            gasto_tela=meus_gastos,
                            faturas_tela=faturas_pendentes,
-                           meus_gastos_categoria=lista_gastos) # Envia a lista para o HTML
-                           
+                           meus_gastos_categoria=gastos_do_banco) # Envia a lista para o HTML
+
+
 
 @app.route('/cartoes')
 def cartoes():
@@ -248,6 +255,50 @@ def editar_cartao(id):
     
     # Se for requisição GET, renderiza a página levando os dados atuais do cartão
     return render_template('editar_cartao.html', cartao_tela=cartao)
+
+
+@app.route('/adicionar_gasto', methods=['POST'])
+def adicionar_gasto():
+    # 1. Pega os dados do formulário
+    categoria_digitada = request.form.get('categoria', '')
+    valor_digitado = request.form.get('valor', '')
+
+    categoria_formatada = categoria_digitada.lower()
+
+    # 2. Valores Padrão (Caso seja um gasto diferente)
+    icone_escolhido = "💸"
+    cor_escolhida = "bg-green-500"
+    largura_escolhida = "w-full" # Depois irei criar a matematica para a largura real
+
+    # 3. O Cérebro de Categrias
+    if "alimentação" in categoria_formatada or "ifood" in categoria_formatada or "mercado" in categoria_formatada:
+        icone_escolhido = "🍔 🥗"
+        cor_escolhida = "bg-orange-500"
+    elif "transporte" in categoria_formatada or "uber" in categoria_formatada or "gasolina" in categoria_formatada:
+        icone_escolhido = "🚗 ⛽"
+        cor_escolhida = "bg-blue-500"
+    elif "lazer" in categoria_formatada or "cinema" in categoria_formatada or "barzinho" in categoria_formatada:
+        icone_escolhido = "🍻 🥂"
+        cor_escolhida = "bg-purple-500"
+    elif "saúde" in categoria_escolhida or "farmácia" in categoria_escolhida or "academia" in categoria_escolhida:
+        icone_escolhido = "💊 🏋️‍♀️"    
+    elif "casa" in categoria_formatada or "conta" in categoria_formatada or "energia" in categoria_formatada or "água" in categoria_formatada or "condomínio" in categoria_formatada or "internet" in categoria_formatada or "financiamento casa" in categoria_formatada:
+        icone_escolhido = "🏠"
+        cor_escolhida = "bg-yellow-500"
+
+    # 4. Cria o objeto e salva no banco
+    novo_gasto = Gasto(
+        categoria=categoria_digitada,
+        icone=icone_escolhido,
+        valor=valor_digitado,
+        cor_barra=cor_escolhida,
+        largura=largura_escolhida
+    )
+
+    db.session.add(novo_gasto)
+    db.session.commit()
+
+    return redirect('/')
 
 
 if __name__ == '__main__':
