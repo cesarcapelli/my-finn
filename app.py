@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect
 from flask_sqlalchemy import SQLAlchemy  # Tradutor de Python para SQL para o nosso banco de dados
+import unicodedata
 
 app = Flask(__name__)
 
@@ -37,15 +38,27 @@ def inicio():
     # 1. Busca todos os gastos guardados no banco de dados
     gastos_do_banco = Gasto.query.all()
 
-    # 2. (próxima feature isso também sumirá e será totalmente dinanico e editavel pelo usuario)
-    meu_saldo = "12.500,00"
-    meus_gastos = "3.150,00"
-    faturas_pendentes = 1
+    total_gasto = 0.0
+
+    for gasto in gastos_do_banco:
+        # Pega os valores do banco, tira possíveis pontos de milhar e troca a vírgula por ponto -> "80.00"
+        valor_limpo = gasto.valor.replace('.', '').replace(',', '.')
+
+        # Converte o texto para número decimal (float) e soma ao total
+        total_gasto += float(valor_limpo)
+
+        # Formata o total de volta para o padrão brasileiro (ex: 1520.5 -> "1.520,50")
+        gasto_formatado = f"{total_gasto:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
+
+
+        # Sera mudado nas prox. feat
+        meu_saldo = "12.500,00"
+        faturas_pendentes = 1    
 
     # 3. Enviamos os gastos DO BANCO para o HTML
     return render_template('visao_geral.html', 
                            saldo_tela=meu_saldo, 
-                           gasto_tela=meus_gastos,
+                           gasto_tela=gasto_formatado,
                            faturas_tela=faturas_pendentes,
                            meus_gastos_categoria=gastos_do_banco) # Envia a lista para o HTML
 
@@ -263,15 +276,16 @@ def adicionar_gasto():
     categoria_digitada = request.form.get('categoria', '')
     valor_digitado = request.form.get('valor', '')
 
-    categoria_formatada = categoria_digitada.lower()
+    categoria_sem_acento = unicodedata.normalize('NFKD', categoria_digitada).encode('ASCII', 'ignore').decode('utf-8')
+    categoria_formatada = categoria_sem_acento.lower()
 
     # 2. Valores Padrão (Caso seja um gasto diferente)
     icone_escolhido = "💸"
     cor_escolhida = "bg-green-500"
     largura_escolhida = "w-full" # Depois irei criar a matematica para a largura real
 
-    # 3. O Cérebro de Categrias
-    if "alimentação" in categoria_formatada or "ifood" in categoria_formatada or "mercado" in categoria_formatada:
+    # 3. O Cérebro de Categorias (Agora sem acentos nos Ifs!)
+    if "alimentacao" in categoria_formatada or "ifood" in categoria_formatada or "mercado" in categoria_formatada:
         icone_escolhido = "🍔 🥗"
         cor_escolhida = "bg-orange-500"
     elif "transporte" in categoria_formatada or "uber" in categoria_formatada or "gasolina" in categoria_formatada:
@@ -280,9 +294,10 @@ def adicionar_gasto():
     elif "lazer" in categoria_formatada or "cinema" in categoria_formatada or "barzinho" in categoria_formatada:
         icone_escolhido = "🍻 🥂"
         cor_escolhida = "bg-purple-500"
-    elif "saúde" in categoria_escolhida or "farmácia" in categoria_escolhida or "academia" in categoria_escolhida:
+    elif "saude" in categoria_formatada or "farmacia" in categoria_formatada or "academia" in categoria_formatada:
         icone_escolhido = "💊 🏋️‍♀️"    
-    elif "casa" in categoria_formatada or "conta" in categoria_formatada or "energia" in categoria_formatada or "água" in categoria_formatada or "condomínio" in categoria_formatada or "internet" in categoria_formatada or "financiamento casa" in categoria_formatada:
+        cor_escolhida = "bg-red-500" 
+    elif "casa" in categoria_formatada or "conta" in categoria_formatada or "energia" in categoria_formatada or "agua" in categoria_formatada or "condominio" in categoria_formatada or "internet" in categoria_formatada or "financiamento" in categoria_formatada:
         icone_escolhido = "🏠"
         cor_escolhida = "bg-yellow-500"
 
