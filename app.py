@@ -47,19 +47,23 @@ def inicio():
         # Converte o texto para número decimal (float) e soma ao total
         total_gasto += float(valor_limpo)
 
-        # Formata o total de volta para o padrão brasileiro (ex: 1520.5 -> "1.520,50")
-        gasto_formatado = f"{total_gasto:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
+    # Formata o total de volta para o padrão brasileiro (ex: 1520.5 -> "1.520,50")
+    gasto_formatado = f"{total_gasto:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
+        
+    # Valor fixo da Carteira por enquanto
+    carteira_float = 12500.0
+    carteira_formatada = "12.500,00"
 
 
-        # Sera mudado nas prox. feat
-        meu_saldo = "12.500,00"
-        faturas_pendentes = 1    
-
+    # Balanço da Carteira (carteira - gastos) 
+    balanco_float = carteira_float - total_gasto
+    balanco_formatado = f"{balanco_float:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
+    
     # 3. Enviamos os gastos DO BANCO para o HTML
     return render_template('visao_geral.html', 
-                           saldo_tela=meu_saldo, 
+                           saldo_tela=carteira_formatada, 
                            gasto_tela=gasto_formatado,
-                           faturas_tela=faturas_pendentes,
+                           balanco_tela=balanco_formatado,
                            meus_gastos_categoria=gastos_do_banco) # Envia a lista para o HTML
 
 
@@ -314,6 +318,19 @@ def adicionar_gasto():
     db.session.commit()
 
     return redirect('/')
+
+@app.route('/deletar_gasto/<int:id>')
+def deletar_gasto(id):
+    # 1. Procura o gasto específico no banco de dados usando o ID único
+    gasto_para_deletar = Gasto.query.get_or_404(id)
+
+    # 2. Deleta e salva a alteração
+    db.session.delete(gasto_para_deletar)
+    db.session.commit()
+
+    # 3. Recarrega a tela inicial 
+    return redirect("/")
+
 
 
 if __name__ == '__main__':
