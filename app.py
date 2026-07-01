@@ -57,6 +57,12 @@ def inicio():
         valor_limpo = gasto.valor.replace('.', '').replace(',', '.')
         total_gasto += float(valor_limpo)
 
+        if carteira_float > 0:
+            porcentagem = (float(valor_limpo) / carteira_float) * 100
+            gasto.largura_dinamica = min(porcentagem, 100.0)
+        else:
+            gasto.largura_dinamica = 0.0
+
     gasto_formatado = f"{total_gasto:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
 
     balanco_float = carteira_float - total_gasto
