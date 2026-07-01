@@ -28,6 +28,12 @@ class Gasto(db.Model):
     cor_barra = db.Column(db.String(50), nullable=False) # Ex: bg-orange-500
     largura = db.Column(db.String(20), nullable=False) # Ex: w-3/5
 
+class Receita(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    descricao = db.Column(db.String(100), nullable=False)
+    valor = db.Column(db.String(20), nullable=False)
+
+
 # Esse comando cria o arquivo físico do banco de dados
 with app.app_context():
     db.create_all()
@@ -37,35 +43,30 @@ with app.app_context():
 def inicio():
     # 1. Busca todos os gastos guardados no banco de dados
     gastos_do_banco = Gasto.query.all()
+    receitas_do_banco = Receita.query.all()
+
+    carteira_float = 0.0
+    for receita in receitas_do_banco:
+        valor_limpo = receita.valor.replace('.', '').replace(',', '.')
+        carteira_float += float(valor_limpo)
+
+    carteira_formatada = f"{carteira_float:,.2f}".replace(',', 'X').replace('.', ',').replace ('X', '.')
 
     total_gasto = 0.0
-
     for gasto in gastos_do_banco:
-        # Pega os valores do banco, tira possíveis pontos de milhar e troca a vírgula por ponto -> "80.00"
         valor_limpo = gasto.valor.replace('.', '').replace(',', '.')
-
-        # Converte o texto para número decimal (float) e soma ao total
         total_gasto += float(valor_limpo)
 
-    # Formata o total de volta para o padrão brasileiro (ex: 1520.5 -> "1.520,50")
     gasto_formatado = f"{total_gasto:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
-        
-    # Valor fixo da Carteira por enquanto
-    carteira_float = 12500.0
-    carteira_formatada = "12.500,00"
 
-
-    # Balanço da Carteira (carteira - gastos) 
     balanco_float = carteira_float - total_gasto
     balanco_formatado = f"{balanco_float:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
-    
-    # 3. Enviamos os gastos DO BANCO para o HTML
-    return render_template('visao_geral.html', 
-                           saldo_tela=carteira_formatada, 
-                           gasto_tela=gasto_formatado,
-                           balanco_tela=balanco_formatado,
-                           meus_gastos_categoria=gastos_do_banco) # Envia a lista para o HTML
 
+    return render_template('visao_geral.html',
+                            saldo_tela=carteira_formatada,
+                            gasto_tela=gasto_formatado,
+                            balanco_tela=balanco_formatado,
+                            meus_gastos_categoria=gastos_do_banco)
 
 
 @app.route('/cartoes')
@@ -331,7 +332,20 @@ def deletar_gasto(id):
     # 3. Recarrega a tela inicial 
     return redirect("/")
 
+@app.route('/adicionar_receita', methods=['POST'])
+def adicionar_receita():
+    descricao_digitada = request.form.get('descricao', '')
+    valor_digitado = request.form.get('valor', '')
 
+    nova_receita= Receita(
+        descricao=descricao_digitada,
+        valor=valor_digitado
+    )
+
+    db.session.add(nova_receita)
+    db.session.commit()
+
+    return redirect('/')
 
 if __name__ == '__main__':
     app.run(debug=True)
